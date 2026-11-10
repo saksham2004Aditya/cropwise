@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>👤 Profile - CropWise</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .profile-card {
+      background: white;
+      border-radius: 15px;
+      padding: 35px;
+      max-width: 650px;
+      margin: 30px auto;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+    .profile-header-banner {
+      background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+      color: white;
+      padding: 25px;
+      border-radius: 10px;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .profile-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #e0e0e0;
+      font-size: 15px;
+    }
+    .profile-item strong {
+      color: #374151;
+    }
+    .profile-item span {
+      font-weight: 600;
+      color: #1b5e20;
+    }
+    .edit-form-box {
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 2px dashed #e0e0e0;
+    }
+    .edit-form-box input, .edit-form-box select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Header -->
+  <header class="navbar">
+    <div class="navbar-container">
+      <div class="navbar-brand">
+        <h2>🌾 CropWise</h2>
+      </div>
+      <nav class="navbar-menu">
+        <a href="/dashboard">📊 Dashboard</a>
+        <a href="/" target="_blank" style="background: #4caf50; color: white;">🚀 Interactive App</a>
+        <a href="/impl1" target="_blank">🌾 Simulation</a>
+        <a href="/logout" class="btn-logout">🚪 Logout</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="dashboard-container">
+    <div class="profile-card">
+      <div class="profile-header-banner">
+        <div style="font-size: 48px; margin-bottom: 8px;">👤</div>
+        <h2 style="color: white; margin: 0;"><%= user.name %></h2>
+        <p style="margin: 4px 0 0; opacity: 0.85;">@<%= user.username || 'user' %> • CropWise Farmer Network</p>
+      </div>
+
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="error-message">
+          <strong>⚠️ Error:</strong> <%= error %>
+        </div>
+      <% } %>
+
+      <% if (typeof success !== 'undefined' && success) { %>
+        <div class="success-message">
+          <strong>✓ Success:</strong> <%= success %>
+        </div>
+      <% } %>
+
+      <div class="profile-details">
+        <div class="profile-item">
+          <strong>Full Name:</strong>
+          <span><%= user.name %></span>
+        </div>
+
+        <div class="profile-item">
+          <strong>Username:</strong>
+          <span><%= user.username || 'N/A' %></span>
+        </div>
+
+        <div class="profile-item">
+          <strong>Farm Size:</strong>
+          <span><%= user.farmSize %> Acres</span>
+        </div>
+
+        <div class="profile-item">
+          <strong>Primary Crop:</strong>
+          <span><%= user.crop %></span>
+        </div>
+
+        <div class="profile-item">
+          <strong>Soil Type:</strong>
+          <span><%= user.soilType || 'Loamy' %></span>
+        </div>
+
+        <div class="profile-item">
+          <strong>Farm Location:</strong>
+          <span><%= user.location || 'India' %></span>
+        </div>
+      </div>
+
+      <!-- Quick Edit Form -->
+      <div class="edit-form-box">
+        <h3 style="color: #1b5e20; margin-bottom: 15px;">✏️ Update Farm Profile</h3>
+        <form method="POST" action="/profile">
+          <div>
+            <label for="name"><strong>Full Name</strong></label>
+            <input type="text" id="name" name="name" value="<%= user.name %>" required />
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+              <label for="farmSize"><strong>Farm Size (Acres)</strong></label>
+              <input type="text" id="farmSize" name="farmSize" value="<%= user.farmSize %>" required />
+            </div>
+            <div>
+              <label for="crop"><strong>Crop Type</strong></label>
+              <select id="crop" name="crop" required>
+                <% const crops = ['Tomato', 'Rice', 'Wheat', 'Corn', 'Sugarcane', 'Cotton', 'Potato', 'Onion']; %>
+                <% crops.forEach(function(c) { %>
+                  <option value="<%= c %>" <%= user.crop === c ? 'selected' : '' %>><%= c %></option>
+                <% }); %>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+              <label for="soilType"><strong>Soil Type</strong></label>
+              <select id="soilType" name="soilType">
+                <% const soils = ['Sandy', 'Loamy', 'Clay', 'Silty', 'Peaty', 'Chalky']; %>
+                <% soils.forEach(function(s) { %>
+                  <option value="<%= s %>" <%= (user.soilType || 'Loamy') === s ? 'selected' : '' %>><%= s %></option>
+                <% }); %>
+              </select>
+            </div>
+            <div>
+              <label for="location"><strong>Location</strong></label>
+              <input type="text" id="location" name="location" value="<%= user.location || 'Nashik, Maharashtra' %>" required />
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">💾 Save Profile Changes</button>
+        </form>
+      </div>
+
+      <div style="margin-top: 25px; text-align: center;">
+        <a href="/dashboard" style="color: #2e7d32; text-decoration: none; font-weight: 600;">← Return to Dashboard</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
