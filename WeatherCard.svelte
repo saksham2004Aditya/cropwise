@@ -37,6 +37,8 @@
     rainfall: 0,
     source: 'live',
     ...(weather || {}),
+    pressure: weather?.pressure ?? 1013,
+    cloudiness: weather?.cloudiness ?? weather?.clouds ?? 20,
   }
 </script>
 

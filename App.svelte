@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte'
-  import { authStore, checkAuth, logout } from './authStore'
+  import { authStore, logout } from './authStore'
   import Login from './Login.svelte'
   import Signup from './Signup.svelte'
   import Dashboard from './Dashboard.svelte'
@@ -14,17 +14,14 @@
   import Sidebar from './Sidebar.svelte'
   import { languageStore, t } from './i18nStore'
 
-  let currentPage = 'loading'
+  let currentPage = 'login'
 
-  onMount(async () => {
-    const isAuthenticated = await checkAuth()
-    if (isAuthenticated) {
-      const hash = window.location.hash.replace('#', '').trim()
-      const validPages = ['dashboard', 'weather', 'irrigation', 'crop-stage', 'soil-check', 'farm', 'profile', 'settings']
-      currentPage = validPages.includes(hash) ? hash : 'dashboard'
-    } else {
-      currentPage = 'login'
-    }
+  onMount(() => {
+    authStore.set({
+      user: null,
+      isAuthenticated: false,
+      loading: false,
+    })
 
     const handleHashChange = () => {
       if ($authStore.isAuthenticated) {
